@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedIntel AI — Clinical Medicine Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --panel-bg: #ffffff;
+            --panel-border: #e2e8f0;
+            --accent-blue: #0284c7;       /* Medical Clinical Blue */
+            --accent-teal: #0d9488;       /* Hospital Teal */
+            --accent-emerald: #16a34a;    /* Safe Green */
+            --accent-orange: #ea580c;     /* Warning Orange */
+            --accent-rose: #dc2626;       /* Danger Red */
+            --text-primary: #0f172a;      /* Deep Navy */
+            --text-muted: #64748b;        /* Slate Gray */
+            --bg-accent-blue: #f0f9ff;
+            --bg-accent-teal: #f0fdfa;
+            --bg-accent-rose: #fef2f2;
+            --bg-accent-orange: #fff7ed;
+            --transition: all 0.2s ease-in-out;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.02);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 100% 0%, #e0f2fe 0%, transparent 40%),
+                              radial-gradient(circle at 0% 100%, #f0fdfa 0%, transparent 40%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1120px;
+            margin: 0 auto;
+        }
+
+        /* Nav Bar styling */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.75rem;
+            margin-bottom: 3rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            fill: none;
+            stroke: var(--accent-blue);
+            stroke-width: 2.2;
+        }
+
+        .model-badge {
+            background: var(--bg-accent-blue);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+            color: var(--accent-blue);
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .model-badge .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-blue);
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+
+        /* Hero / Headline */
+        .hero {
+            text-align: center;
+            max-width: 760px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            color: var(--accent-blue);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* Input mode switcher tabs */
+        .mode-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mode-tab {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            padding: 0.65rem 1.35rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .mode-tab:hover {
+            color: var(--text-primary);
+            border-color: rgba(0, 0, 0, 0.15);
+        }
+
+        .mode-tab.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+
+        .input-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            max-width: 680px;
+            margin: 0 auto 3rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dropzone visual styles */
+        .dropzone {
+            border: 2px dashed rgba(2, 132, 199, 0.3);
+            border-radius: 14px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-accent-blue);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-blue);
+            background: rgba(2, 132, 199, 0.08);
+        }
+
+        .dropzone svg {
+            width: 48px;
+            height: 48px;
+            stroke: var(--accent-blue);
+            stroke-width: 1.75;
+            transition: var(--transition);
+        }
+
+        .dropzone:hover svg {
+            transform: translateY(-3px);
+        }
+
+        .dropzone p {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .dropzone span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Search input bar styles */
+        .search-bar {
+            display: flex;
+            gap: 0.75rem;
+            width: 100%;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: #ffffff;
+            border: 1.5px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 0.9rem 1.2rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .btn {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            padding: 0.9rem 1.8rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            background: #0270a9;
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            margin-top: 1.5rem;
+            background: #ffffff;
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .preview-actions button {
+            background: transparent;
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .preview-actions button:hover {
+            border-color: var(--accent-rose);
+            color: var(--accent-rose);
+            background: var(--bg-accent-rose);
+        }
+
+        .preview-img-container {
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            border: 1px solid var(--panel-border);
+        }
+
+        .preview-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* AI Loading Experience */
+        .analysis-loader {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .pulse-scanner {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem auto;
+        }
+
+        .pulse-scanner svg {
+            width: 100%;
+            height: 100%;
+            stroke: var(--accent-blue);
+            stroke-width: 1.5;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            box-shadow: 0 0 8px var(--accent-blue);
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+
+        .loader-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.25rem;
+        }
+
+        /* Sequential loading steps indicator */
+        .loading-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-width: 320px;
+            margin: 0 auto;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+        }
+
+        .step-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            background: #ffffff;
+            transition: var(--transition);
+        }
+
+        .step-item.active {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .step-item.active .step-circle {
+            border-color: var(--accent-blue);
+            background: var(--bg-accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .step-item.done {
+            color: var(--accent-emerald);
+            font-weight: 600;
+        }
+
+        .step-item.done .step-circle {
+            border-color: var(--accent-emerald);
+            background: var(--accent-emerald);
+            color: #ffffff;
+        }
+
+        /* Main Result Screen */
+        .result-screen {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Sticky Context Card styled like Clinical Prescription */
+        .context-card {
+            background: var(--panel-bg);
+            border: 1.5px solid var(--panel-border);
+            border-left: 6px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-md);
+        }
+
+        .context-info {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .context-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: var(--bg-accent-blue);
+            border: 1.5px solid rgba(2, 132, 199, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-blue);
+        }
+
+        .context-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .context-detail h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.85rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .context-detail p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .pill-badge {
+            background: var(--bg-accent-teal);
+            border: 1px solid rgba(13, 148, 136, 0.3);
+            color: var(--accent-teal);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Result sub-navigation tabs */
+        .result-nav {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--panel-border);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+
+        .result-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.9rem 1.35rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-item:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            color: var(--accent-blue);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-blue);
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+
+        /* Panel layouts for tab contents */
+        .tab-panel {
+            animation: fadeIn 0.2s ease;
+        }
+
+        /* Price Comparison Grid */
+        .price-overview {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .price-overview {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 480px) {
+            .price-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .pharmacy-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pharmacy-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(2, 132, 199, 0.3);
+        }
+
+        .pharmacy-card.cheapest {
+            border-color: rgba(22, 163, 74, 0.5);
+            background: var(--bg-accent-teal);
+        }
+
+        .best-price-ribbon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent-emerald);
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.25rem 0.75rem;
+            border-bottom-left-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pharmacy-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pharmacy-logo-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: var(--bg-accent-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-size: 0.95rem;
+            border: 1px solid rgba(2, 132, 199, 0.15);
+        }
+
+        .pharmacy-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+        }
+
+        .pharmacy-med-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            min-height: 2.6rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pharmacy-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-top: auto;
+        }
+
+        .pharmacy-price {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-emerald);
+        }
+
+        .availability-pill {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            background: var(--bg-accent-teal);
+            color: var(--accent-teal);
+            border: 1.5px solid rgba(13, 148, 136, 0.2);
+        }
+
+        .availability-pill.out {
+            background: var(--bg-accent-rose);
+            color: var(--accent-rose);
+            border-color: rgba(220, 38, 38, 0.2);
+        }
+
+        /* Price Insights Sidebar Card */
+        .insights-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            height: fit-content;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .insights-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+        }
+
+        .insight-stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--panel-border);
+        }
+
+        .insight-stat:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .insight-stat .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .insight-stat .value {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: var(--text-primary);
+        }
+
+        .insight-stat.saving-stat .value {
+            color: var(--accent-blue);
+            font-size: 1.35rem;
+            font-weight: 800;
+        }
+
+        /* Side Effects Split Layout */
+        .side-effects-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .side-effects-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .side-effects-col {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .info-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-blue);
+        }
+
+        .info-card-text {
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .warning-banner {
+            background: var(--bg-accent-rose);
+            border: 1.5px solid rgba(220, 38, 38, 0.25);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .warning-banner-title {
+            color: var(--accent-rose);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-banner ul, .bullet-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .warning-banner li, .bullet-list li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        .warning-banner li::before {
+            content: "•";
+            position: absolute;
+            left: 0.25rem;
+            color: var(--accent-rose);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .bullet-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0.25rem;
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .precaution-banner {
+            background: var(--bg-accent-orange);
+            border: 1.5px solid rgba(234, 88, 12, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .precaution-banner-title {
+            color: var(--accent-orange);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Alternatives Layout */
+        .alternatives-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .alternative-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .alternative-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: rgba(2, 132, 199, 0.2);
+        }
+
+        .alternative-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .alternative-title h3 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+        }
+
+        .alternative-title p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            font-weight: 500;
+        }
+
+        .alternative-price-box {
+            text-align: right;
+        }
+
+        .alternative-price-box .price {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent-emerald);
+        }
+
+        .alternative-price-box .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* Collapse / Expand store comparison */
+        .alt-stores-trigger {
+            background: transparent;
+            border: none;
+            color: var(--accent-teal);
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-top: 1rem;
+            padding: 0;
+            transition: var(--transition);
+        }
+
+        .alt-stores-trigger:hover {
+            color: var(--accent-blue);
+        }
+
+        .alt-stores-panel {
+            margin-top: 1rem;
+            border-top: 1.5px dashed var(--panel-border);
+            padding-top: 1rem;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .alt-stores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .alt-store-row {
+            background: var(--bg-color);
+            border: 1px solid var(--panel-border);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alt-store-row .name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .alt-store-row .price {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--accent-emerald);
+        }
+
+        /* Food suggestions recipe card layout */
+        .food-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .food-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .food-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .food-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .food-card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-accent-teal);
+            color: var(--accent-teal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            border: 1.5px solid rgba(13, 148, 136, 0.2);
+        }
+
+        .food-card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--accent-teal);
+        }
+
+        .food-detail-item {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .food-detail-item .label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.025em;
+            margin-bottom: 0.15rem;
+        }
+
+        .food-detail-item .value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .food-precaution {
+            background: var(--bg-accent-orange);
+            border: 1px solid rgba(234, 88, 12, 0.15);
+            border-radius: 8px;
+            padding: 0.6rem 0.85rem;
+            font-size: 0.8rem;
+            color: var(--accent-orange);
+            margin-top: auto;
+            font-weight: 500;
+        }
+
+        /* Info disclaimer texts */
+        .disclaimer-banner {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            padding-top: 1rem;
+            border-top: 1.5px dashed var(--panel-border);
+            margin-top: 1.5rem;
+            font-style: italic;
+        }
+
+        /* Empty & error state styles */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            max-width: 680px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            stroke: var(--panel-border);
+            stroke-width: 1.2;
+            fill: none;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            max-width: 360px;
+        }
+
+        .error-alert {
+            background: var(--bg-accent-rose);
+            border: 1.5px solid rgba(220, 38, 38, 0.25);
+            color: var(--accent-rose);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            animation: fadeIn 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .error-alert svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--accent-rose);
+            stroke-width: 2;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        .error-alert-content {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo SVG Gradient definition -->
+    <svg style="width: 0; height: 0; position: absolute;">
+        <defs>
+            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7" />
+                <stop offset="100%" stop-color="#0d9488" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- React App Root Container -->
+    <div id="root"></div>
+
+    <!-- Load React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <!-- Load Babel Standalone for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- React Application Component Scripts -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        function App() {
+            // App state management
+            const [selectedFile, setSelectedFile] = useState(null);
+            const [previewUrl, setPreviewUrl] = useState('');
+            const [activeInputMode, setActiveInputMode] = useState('upload');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [error, setError] = useState(null);
+            
+            // Stepper loader states
+            const [loading, setLoading] = useState(false);
+            const [loadingTitle, setLoadingTitle] = useState('');
+            const [loadingStep, setLoadingStep] = useState(null); // 'ocr' | 'verify' | 'scrape' | 'model'
+
+            // Medicine loaded states
+            const [activeTab, setActiveTab] = useState('prices');
+            const [showResults, setShowResults] = useState(false);
+            const [isSymptom, setIsSymptom] = useState(false);
+
+            // Response details state
+            const [medicineName, setMedicineName] = useState('');
+            const [composition, setComposition] = useState('');
+            const [strength, setStrength] = useState('');
+            const [manufacturer, setManufacturer] = useState('');
+            const [dosageForm, setDosageForm] = useState('');
+            const [prices, setPrices] = useState([]);
+            const [sideEffects, setSideEffects] = useState(null);
+            const [alternatives, setAlternatives] = useState(null);
+            const [foodSupport, setFoodSupport] = useState(null);
+
+            // Collapsed states map for alternative sub-grids
+            const [expandedAlts, setExpandedAlts] = useState({});
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    setSelectedFile(file);
+                    setError(null);
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        setPreviewUrl(evt.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const clearImageSelection = () => {
+                setSelectedFile(null);
+                setPreviewUrl('');
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+                e.currentTarget.classList.add('dragover');
+            };
+
+            const handleDragLeave = (e) => {
+                e.currentTarget.classList.remove('dragover');
+            };
+
+            const handleDrop = (e) => {
+                e.preventDefault();
+                e.currentTarget.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    const file = e.dataTransfer.files[0];
+                    setSelectedFile(file);
+                    setError(null);
+                    const reader = new FileReader();
+                    reader.onload = (evt) => {
+                        setPreviewUrl(evt.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const toggleAltStores = (idx) => {
+                setExpandedAlts(prev => ({
+                    ...prev,
+                    [idx]: !prev[idx]
+                }));
+            };
+
+            const isSymptomQueryText = (input) => {
+                const lower = input.toLowerCase().trim();
+                return lower.includes("pain") || lower.includes("cough") || lower.includes("throat") ||
+                       lower.includes("cold") || lower.includes("constipation") || lower.includes("stomach") ||
+                       lower.includes("upset") || lower.includes("indigestion") || lower.includes("acid") ||
+                       lower.includes("reflux") || lower.includes("fever") || lower.includes("headache") ||
+                       lower.includes("ache") || lower.includes("nausea") || lower.includes("bloating") ||
+                       lower.includes("diarrhea") || lower.includes("vomit") || lower.includes("motion") ||
+                       lower.includes("flu") || lower.includes("cramp") || lower.includes("symptom");
+            };
+
+            const uploadAndIdentify = async () => {
+                if (!selectedFile) {
+                    setError('Please select a medicine label image first.');
+                    return;
+                }
+
+                setLoading(true);
+                setShowResults(false);
+                setLoadingTitle('Analyzing clinical packaging label...');
+                setLoadingStep('ocr');
+                setError(null);
+
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+
+                try {
+                    // Simulation delays for visual stepper tracking
+                    await new Promise(r => setTimeout(r, 600));
+                    setLoadingStep('verify');
+                    await new Promise(r => setTimeout(r, 600));
+                    setLoadingStep('scrape');
+
+                    const response = await fetch('/api/medicines/search-image', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Could not analyze medicine image. Please ensure packaging is readable.');
+                    }
+
+                    const data = await response.json();
+                    
+                    if (!data.medicineName || data.medicineName === 'UNVERIFIED') {
+                        throw new Error('Could not identify a verified medicine brand from the label packaging.');
+                    }
+
+                    setIsSymptom(false);
+                    setMedicineName(data.medicineName);
+                    setPrices(data.prices || []);
+
+                    // Run model operations step (scraping alternative substitute prices happens concurrently now!)
+                    setLoadingStep('model');
+
+                    await Promise.all([
+                        fetchSideEffects(data.medicineName),
+                        fetchAlternatives(data.medicineName),
+                        fetchFoodSupport(data.medicineName)
+                    ]);
+
+                    setLoading(false);
+                    setShowResults(true);
+                    setActiveTab('prices');
+
+                } catch (err) {
+                    setLoading(false);
+                    setError(err.message);
+                }
+            };
+
+            const performTextSearch = async () => {
+                const query = searchQuery.trim();
+                if (!query) {
+                    setError('Please type a medicine name or symptom to search.');
+                    return;
+                }
+
+                setLoading(true);
+                setShowResults(false);
+                setError(null);
+
+                const symptomCheck = isSymptomQueryText(query);
+
+                if (symptomCheck) {
+                    // Symptom queries only use Food Support
+                    setLoadingTitle('Searching food support remedies for: ' + query + '...');
+                    setLoadingStep('model');
+                    try {
+                        setIsSymptom(true);
+                        setMedicineName(query);
+                        setComposition('Minor Symptom Query');
+                        setStrength('');
+                        setManufacturer('');
+                        
+                        await fetchFoodSupport(query);
+
+                        setLoading(false);
+                        setShowResults(true);
+                        setActiveTab('food');
+                    } catch (e) {
+                        setLoading(false);
+                        setError('Failed to fetch food support remedies: ' + e.message);
+                    }
+                } else {
+                    // Medicine search flow
+                    setLoadingTitle('Fetching details for medicine: ' + query + '...');
+                    setLoadingStep('scrape');
+
+                    try {
+                        setIsSymptom(false);
+
+                        // Try to get cached prices first
+                        let priceResponse = await fetch('/api/medicines/search?name=' + encodeURIComponent(query));
+                        let fetchedPrices = [];
+                        if (priceResponse.ok) {
+                            fetchedPrices = await priceResponse.ok ? await priceResponse.json() : [];
+                        }
+
+                        // Run playwright scrape if cache empty
+                        if (!fetchedPrices || fetchedPrices.length === 0) {
+                            const scrapeResponse = await fetch('/api/medicines/scrape?name=' + encodeURIComponent(query), {
+                                method: 'POST'
+                            });
+                            if (scrapeResponse.ok) {
+                                fetchedPrices = await scrapeResponse.json();
+                            }
+                        }
+
+                        setMedicineName(query);
+                        setPrices(fetchedPrices.map(p => ({ website: p.website, price: p.price, availability: p.availability })) || []);
+
+                        setLoadingStep('model');
+                        await Promise.all([
+                            fetchSideEffects(query),
+                            fetchAlternatives(query),
+                            fetchFoodSupport(query)
+                        ]);
+
+                        setLoading(false);
+                        setShowResults(true);
+                        setActiveTab('prices');
+                    } catch (e) {
+                        setLoading(false);
+                        setError('Could not find information for medicine: ' + query);
+                    }
+                }
+            };
+
+            const fetchSideEffects = async (brandName) => {
+                try {
+                    const response = await fetch('/api/medicine/side-effects', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ brandName: brandName })
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setSideEffects(data);
+                        if (data.genericName) setComposition(data.genericName);
+                        if (data.strength) setStrength(data.strength);
+                        if (data.manufacturer) setManufacturer(data.manufacturer);
+                    } else {
+                        setSideEffects(null);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                    setSideEffects(null);
+                }
+            };
+
+            const fetchAlternatives = async (brandName) => {
+                try {
+                    const response = await fetch(`/api/medicines/${encodeURIComponent(brandName)}/alternatives`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setAlternatives(data);
+                        if (data.dosageForm) setDosageForm(data.dosageForm);
+                    } else {
+                        setAlternatives(null);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                    setAlternatives(null);
+                }
+            };
+
+            const fetchFoodSupport = async (brandName) => {
+                try {
+                    const response = await fetch(`/api/medicines/${encodeURIComponent(brandName)}/food-support`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setFoodSupport(data);
+                    } else {
+                        setFoodSupport(null);
+                    }
+                } catch (e) {
+                    console.warn(e);
+                    setFoodSupport(null);
+                }
+            };
+
+            // Calculations computed from active prices list
+            const pricesExist = prices && prices.length > 0;
+            const validPrices = prices.map(p => p.price).filter(price => price && price > 0);
+            const bestPrice = validPrices.length ? Math.min(...validPrices) : 0;
+            const highestPrice = validPrices.length ? Math.max(...validPrices) : 0;
+            const maxSavings = (highestPrice - bestPrice).toFixed(2);
+
+            return (
+                <div className="container">
+                    {/* Medical Navigation bar */}
+                    <nav>
+                        <div className="logo">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z" fill="currentColor"/>
+                            </svg>
+                            <span>ClinicIntel AI</span>
+                        </div>
+                        <div className="model-badge">
+                            <span className="pulse"></span>
+                            <span>Clinical Model: gemini-3.5-flash-lite</span>
+                        </div>
+                    </nav>
+
+                    {/* Clinic Error Alert Banner */}
+                    {error && (
+                        <div className="error-alert">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                            <div className="error-alert-content">{error}</div>
+                        </div>
+                    )}
+
+                    {/* Hero Headline */}
+                    <div className="hero">
+                        <h1>Clinical Medicine <span>Intelligence &amp; Savings</span></h1>
+                        <p>Upload a medicine packaging label or type a query to dynamically scan pharmacy prices, learn safe side-effects, find same-composition options, and get supportive home remedies.</p>
+                    </div>
+
+                    {/* Clinical Mode Tabs */}
+                    <div className="mode-tabs">
+                        <button 
+                            className={`mode-tab ${activeInputMode === 'upload' ? 'active' : ''}`}
+                            onClick={() => { setActiveInputMode('upload'); setError(null); }}
+                        >
+                            📷 Scan Packaging Label
+                        </button>
+                        <button 
+                            className={`mode-tab ${activeInputMode === 'search' ? 'active' : ''}`}
+                            onClick={() => { setActiveInputMode('search'); setError(null); }}
+                        >
+                            🔍 Search by Name / Symptom
+                        </button>
+                    </div>
+
+                    {/* Input Panel Card */}
+                    {!loading && !showResults && (
+                        <div className="input-card">
+                            {activeInputMode === 'upload' ? (
+                                <div>
+                                    <div 
+                                        className="dropzone"
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        onClick={() => document.getElementById('fileInput').click()}
+                                    >
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                                        </svg>
+                                        <div>
+                                            <p>Click or drag medicine pack photo here</p>
+                                            <span>Accepts JPG, PNG formats</span>
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="file" 
+                                        id="fileInput" 
+                                        accept="image/*" 
+                                        style={{ display: 'none' }} 
+                                        onChange={handleFileSelect}
+                                    />
+                                    
+                                    {previewUrl && (
+                                        <div className="preview-box">
+                                            <div className="preview-header">
+                                                <span>{selectedFile ? selectedFile.name : 'image.png'}</span>
+                                                <div className="preview-actions">
+                                                    <button onClick={clearImageSelection}>Remove</button>
+                                                </div>
+                                            </div>
+                                            <div className="preview-img-container">
+                                                <img src={previewUrl} alt="Preview" />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button 
+                                        className="btn" 
+                                        style={{ width: '100%', marginTop: '1.5rem' }}
+                                        onClick={uploadAndIdentify}
+                                        disabled={!selectedFile}
+                                    >
+                                        🩺 Analyze Medicine Details
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="search-bar">
+                                    <input 
+                                        type="text" 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Type a medicine (e.g. Dolo 650) or symptom (e.g. stomach pain)..."
+                                        onKeyDown={(e) => { if (e.key === 'Enter') performTextSearch(); }}
+                                    />
+                                    <button className="btn" onClick={performTextSearch}>
+                                        Search
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Stepper Analysis Loader */}
+                    {loading && (
+                        <div className="input-card">
+                            <div className="analysis-loader">
+                                <div className="pulse-scanner">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <rect x="2" y="2" width="20" height="20" rx="4" />
+                                        <path d="M7 12h10M12 7v10" />
+                                    </svg>
+                                    <div className="scanner-line"></div>
+                                </div>
+                                <div className="loader-title">{loadingTitle}</div>
+                                <div className="loading-steps">
+                                    <div className={`step-item ${loadingStep === 'ocr' ? 'active' : ''} ${['verify', 'scrape', 'model'].includes(loadingStep) ? 'done' : ''}`}>
+                                        <div className="step-circle">{['verify', 'scrape', 'model'].includes(loadingStep) ? '✓' : '1'}</div>
+                                        <span>Reading medicine label texts (OCR)</span>
+                                    </div>
+                                    <div className={`step-item ${loadingStep === 'verify' ? 'active' : ''} ${['scrape', 'model'].includes(loadingStep) ? 'done' : ''}`}>
+                                        <div className="step-circle">{['scrape', 'model'].includes(loadingStep) ? '✓' : '2'}</div>
+                                        <span>Verifying composition &amp; safety standards</span>
+                                    </div>
+                                    <div className={`step-item ${loadingStep === 'scrape' ? 'active' : ''} ${loadingStep === 'model' ? 'done' : ''}`}>
+                                        <div className="step-circle">{loadingStep === 'model' ? '✓' : '3'}</div>
+                                        <span>Comparing live market store prices concurrently</span>
+                                    </div>
+                                    <div className={`step-item ${loadingStep === 'model' ? 'active' : ''}`}>
+                                        <div className="step-circle">4</div>
+                                        <span>Structuring clinical safety &amp; alternative remedies</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Initial State Placeholder */}
+                    {!loading && !showResults && (
+                        <div className="empty-state">
+                            <svg viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3>No Active Analysis</h3>
+                            <p>Upload a packaging label photo or perform a search query. The clinical report insights will populate here.</p>
+                        </div>
+                    )}
+
+                    {/* Clinical Result Screen */}
+                    {!loading && showResults && (
+                        <div className="result-screen">
+                            {/* Sticky Header context card */}
+                            <div className="context-card">
+                                <div className="context-info">
+                                    <div className="context-icon">
+                                        <svg viewBox="0 0 24 24" stroke="currentColor">
+                                            <rect x="2" y="7" width="20" height="14" rx="2" />
+                                            <path d="M6 7V5a3 3 0 016 0v2m0-2h6a3 3 0 013 3v2" />
+                                        </svg>
+                                    </div>
+                                    <div className="context-detail">
+                                        <h2>{medicineName} <span className={`pill-badge ${isSymptom && foodSupport?.chronicCondition ? 'warning' : ''}`}>{isSymptom ? (foodSupport?.chronicCondition ? 'Doctor Supervision Required' : 'Symptom Care') : 'Database Verified'}</span></h2>
+                                        <p>{isSymptom ? (foodSupport?.chronicCondition ? 'Chronic / Severe Condition Care' : 'Minor Symptom Search') : `${composition} ${strength ? '• ' + strength : ''} • ${dosageForm || 'Tablet'}`}</p>
+                                    </div>
+                                </div>
+                                {!isSymptom && manufacturer && (
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+                                        Manufactured by<br />
+                                        <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>{manufacturer}</strong>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Horizontal Tabs */}
+                            <div className="result-nav">
+                                {!isSymptom && (
+                                    <button 
+                                        className={`nav-item ${activeTab === 'prices' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('prices')}
+                                    >
+                                        <svg viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5h.007m-.007 3h.007m-.007 3h.007m3-6h12a1.5 1.5 0 01-1.5 1.5v15a1.5 1.5 0 01-1.5 1.5h-12a1.5 1.5 0 01-1.5-1.5v-15a1.5 1.5 0 011.5-1.5z" />
+                                        </svg>
+                                        Price Comparison
+                                    </button>
+                                )}
+                                {!isSymptom && (
+                                    <button 
+                                        className={`nav-item ${activeTab === 'safety' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('safety')}
+                                    >
+                                        <svg viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                        </svg>
+                                        Side Effects &amp; Safety
+                                    </button>
+                                )}
+                                {!isSymptom && (
+                                    <button 
+                                        className={`nav-item ${activeTab === 'alternatives' ? 'active' : ''}`}
+                                        onClick={() => setActiveTab('alternatives')}
+                                    >
+                                        <svg viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                        Substitute Options
+                                    </button>
+                                )}
+                                <button 
+                                    className={`nav-item ${activeTab === 'food' ? 'active' : ''}`}
+                                    onClick={() => setActiveTab('food')}
+                                >
+                                    <svg viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                    </svg>
+                                    Dietary Support
+                                </button>
+                            </div>
+
+                            {/* Tab 1: Prices Grid */}
+                            {!isSymptom && activeTab === 'prices' && (
+                                <div className="tab-panel">
+                                    <div className="price-overview">
+                                        <div className="price-grid">
+                                            {pricesExist ? (
+                                                prices.map((p, idx) => {
+                                                    const isCheapest = p.price === bestPrice;
+                                                    const isOut = p.availability && p.availability.toLowerCase().includes('out');
+                                                    return (
+                                                        <div key={idx} className={`pharmacy-card ${isCheapest ? 'cheapest' : ''}`}>
+                                                            {isCheapest && <div className="best-price-ribbon">Best price</div>}
+                                                            <div className="pharmacy-header">
+                                                                <div className="pharmacy-logo-placeholder">{p.website ? p.website.charAt(0) : 'P'}</div>
+                                                                <span className="pharmacy-name">{p.website || 'Pharmacy'}</span>
+                                                            </div>
+                                                            <div className="pharmacy-med-title">{p.medicineName || medicineName}</div>
+                                                            <div className="pharmacy-price-row">
+                                                                <span className="pharmacy-price">₹{p.price || 'N/A'}</span>
+                                                                <span className={`availability-pill ${isOut ? 'out' : ''}`}>{p.availability || 'AVAILABLE'}</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                                                    No dynamic store prices available for this brand currently.
+                                                </div>
+                                            )}
+                                        </div>
+                                        {pricesExist && (
+                                            <div className="insights-card">
+                                                <div className="insights-title">
+                                                    <svg viewBox="0 0 24 24" style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                                    </svg>
+                                                    <span>Price Insights</span>
+                                                </div>
+                                                <div className="insight-stat">
+                                                    <span className="label">Best Price Found</span>
+                                                    <span className="value" style={{ color: 'var(--accent-emerald)' }}>₹{bestPrice}</span>
+                                                </div>
+                                                <div className="insight-stat">
+                                                    <span className="label">Highest Market Price</span>
+                                                    <span className="value">₹{highestPrice}</span>
+                                                </div>
+                                                <div className="insight-stat saving-stat">
+                                                    <span className="label">Maximum Savings</span>
+                                                    <span className="value">₹{maxSavings}</span>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Tab 2: Side Effects */}
+                            {!isSymptom && activeTab === 'safety' && (
+                                <div className="tab-panel">
+                                    {sideEffects ? (
+                                        <div className="side-effects-layout">
+                                            <div className="side-effects-col">
+                                                {sideEffects.whatItDoes && (
+                                                    <div className="info-card">
+                                                        <div className="info-card-title">💊 What it does</div>
+                                                        <p className="info-card-text">{sideEffects.whatItDoes}</p>
+                                                    </div>
+                                                )}
+                                                {sideEffects.avoidIf && (
+                                                    <div className="info-card">
+                                                        <div className="info-card-title" style={{ color: 'var(--accent-orange)' }}>⚠️ Avoid this if</div>
+                                                        <p className="info-card-text">{sideEffects.avoidIf}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="side-effects-col">
+                                                {sideEffects.commonSideEffects && sideEffects.commonSideEffects.length > 0 && (
+                                                    <div className="info-card">
+                                                        <div className="info-card-title">🔹 Common side effects</div>
+                                                        <ul className="bullet-list">
+                                                            {sideEffects.commonSideEffects.map((item, i) => <li key={i}>{item}</li>)}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                                {sideEffects.lessCommonSideEffects && sideEffects.lessCommonSideEffects.length > 0 && (
+                                                    <div className="info-card">
+                                                        <div className="info-card-title">🔹 Less common side effects</div>
+                                                        <ul className="bullet-list">
+                                                            {sideEffects.lessCommonSideEffects.map((item, i) => <li key={i}>{item}</li>)}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                                {sideEffects.seriousWarnings && sideEffects.seriousWarnings.length > 0 && (
+                                                    <div className="warning-banner">
+                                                        <div className="warning-banner-title">🚨 Seek urgent medical help if you get:</div>
+                                                        <ul className="warning-banner">
+                                                            {sideEffects.seriousWarnings.map((item, i) => <li key={i}>{item}</li>)}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                                            Safety guidelines are currently unavailable for this brand.
+                                        </div>
+                                    )}
+                                    {sideEffects && sideEffects.disclaimer && (
+                                        <div className="disclaimer-banner">{sideEffects.disclaimer}</div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Tab 3: Alternatives Substitute Options */}
+                            {!isSymptom && activeTab === 'alternatives' && (
+                                <div className="tab-panel">
+                                    {alternatives && alternatives.alternatives && alternatives.alternatives.length > 0 ? (
+                                        <div className="alternatives-container">
+                                            {alternatives.alternatives.map((alt, idx) => {
+                                                const isExpanded = expandedAlts[idx];
+                                                return (
+                                                    <div key={idx} className="alternative-card">
+                                                        <div className="alternative-header">
+                                                            <div className="alternative-title">
+                                                                <h3>{alt.medicineName}</h3>
+                                                                <p>{alt.composition || alternatives.composition} • {alt.strength || alternatives.strength} • {alt.dosageForm || alternatives.dosageForm || 'Tablet'}</p>
+                                                            </div>
+                                                            <div className="alternative-price-box">
+                                                                <span className="label">Starting Price</span>
+                                                                <div className="price">₹{alt.lowestPrice || 'N/A'}</div>
+                                                            </div>
+                                                        </div>
+                                                        <button 
+                                                            className="alt-stores-trigger"
+                                                            onClick={() => toggleAltStores(idx)}
+                                                        >
+                                                            <span>Compare store prices</span>
+                                                            <svg 
+                                                                viewBox="0 0 24 24" 
+                                                                style={{ 
+                                                                    width: '14px', 
+                                                                    height: '14px', 
+                                                                    fill: 'none', 
+                                                                    stroke: 'currentColor', 
+                                                                    strokeWidth: '2.5',
+                                                                    transform: isExpanded ? 'rotate(180deg)' : 'none',
+                                                                    transition: 'transform 0.2s'
+                                                                }}
+                                                            >
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                                            </svg>
+                                                        </button>
+                                                        
+                                                        {isExpanded && (
+                                                            <div className="alt-stores-panel">
+                                                                <div className="alt-stores-grid">
+                                                                    {alt.storePrices && alt.storePrices.length > 0 ? (
+                                                                        alt.storePrices.map((sp, i) => (
+                                                                            <div key={i} className="alt-store-row">
+                                                                                <span className="name">{sp.website}</span>
+                                                                                <span className="price">₹{sp.price} <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>({sp.availability || 'AVAILABLE'})</span></span>
+                                                                            </div>
+                                                                        ))
+                                                                    ) : (
+                                                                        <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>No store prices scraped.</div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                                            No same-composition alternative options matching this formula were found.
+                                        </div>
+                                    )}
+                                    {alternatives && alternatives.disclaimer && (
+                                        <div className="precaution-banner" style={{ marginTop: '2rem' }}>
+                                            <div className="precaution-banner-title" style={{ color: 'var(--accent-indigo)' }}>⚕️ Precaution notice</div>
+                                            <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: '1.4' }}>{alternatives.disclaimer}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Tab 4: Food Support Grid */}
+                            {activeTab === 'food' && (
+                                <div className="tab-panel">
+                                    {foodSupport && foodSupport.foodSupportAvailable && foodSupport.foodSuggestions && foodSupport.foodSuggestions.length > 0 ? (
+                                        <div className="food-grid">
+                                            {foodSupport.foodSuggestions.map((item, idx) => (
+                                                <div key={idx} className="food-card">
+                                                    <div className="food-card-header">
+                                                        <div className="food-card-icon">🥣</div>
+                                                        <span className="food-card-title">{item.food}</span>
+                                                    </div>
+                                                    <div className="food-detail-item">
+                                                        <div className="label">Suggested Quantity</div>
+                                                        <div className="value">{item.quantity || 'Standard serving'}</div>
+                                                    </div>
+                                                    <div className="food-detail-item">
+                                                        <div className="label">Helpful Part</div>
+                                                        <div className="value" style={{ color: 'var(--accent-teal)', fontWeight: '600' }}>{item.helpfulPart || 'Natural supportive element'}</div>
+                                                    </div>
+                                                    <div className="food-detail-item">
+                                                        <div className="label">Why it may help</div>
+                                                        <div className="value">{item.reason}</div>
+                                                    </div>
+                                                    {item.precaution && (
+                                                        <div className="food-precaution">
+                                                            <strong>💡 Note:</strong> {item.precaution}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-muted)' }}>
+                                            No food-based supportive remedies are appropriate for this condition. Please follow prescribed instructions.
+                                        </div>
+                                    )}
+                                    {foodSupport && foodSupport.warning && (
+                                        <div className="precaution-banner" style={{ marginTop: '2rem', background: foodSupport.chronicCondition ? 'rgba(225, 29, 72, 0.15)' : 'rgba(20, 184, 166, 0.1)', borderColor: foodSupport.chronicCondition ? '#f43f5e' : 'var(--accent-teal)' }}>
+                                            <div className="precaution-banner-title" style={{ color: foodSupport.chronicCondition ? '#fda4af' : 'var(--accent-teal)', fontSize: '1rem', fontWeight: '700' }}>
+                                                {foodSupport.chronicCondition ? '🚨 CRITICAL MEDICAL ADVISORY' : '🥦 Food supportive care notice'}
+                                            </div>
+                                            <p style={{ fontSize: '0.9rem', color: foodSupport.chronicCondition ? '#fecdd3' : '#cbd5e1', lineHeight: '1.5', fontWeight: foodSupport.chronicCondition ? '600' : '400' }}>{foodSupport.warning}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                            
+                            {/* Option to clear results and start again */}
+                            <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
+                                <button className="btn" style={{ background: '#ffffff', border: '1.5px solid var(--panel-border)', color: 'var(--text-primary)' }} onClick={() => { setShowResults(false); clearImageSelection(); setSearchQuery(''); }}>
+                                    ← Scan / Search another query
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
